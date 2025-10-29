@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      /* 变量类型 */
+      // var for variable，var声明的变量具有函数作用域，避免使用
+      var x;
+      // let声明的变量具有块级作用域，更安全灵活（变量提升，作用域？）
+      let y = 5;
+      // 常量
+      const PI = 3.14;
+      console.log(x, y, PI);
+      let name = "flower";
+      console.log(name);
+      let empty_value = null;
+      // undefined 用于已声明未赋值，null用于变量值为空
+      console.log(empty_value);
+
+      /* 控制语句 */
+      let age = 20;
+      if (age > 18) {
+        console.log("adult");
+      } else {
+        console.log("teenager");
+      }
+
+      let time = 12;
+      if (time < 12) {
+        alert("before noon");
+      } else if (time == 12) {
+        alert("noon");
+      } else {
+        alert("after noon");
+      }
+
+      for (let i = 0; i < 5; i++) {
+        console.log(i);
+      }
+    </script>
+  </body>
+</html>

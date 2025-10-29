@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      /* 默认16px */
+      /* html {
+        font-size: 20px;
+      } */
+      .box_px {
+        width: 300px;
+        height: 100px;
+        background-color: purple;
+        margin-bottom: 50px;
+      }
+      .box_rem {
+        width: 5rem;
+        height: 3rem;
+        background-color: aqua;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="box_px"></div>
+    <div class="box_rem"></div>
+
+    <script>
+      // 根据设备宽度设置html标签的font-size
+      function setHtmlFontSize() {
+        document.documentElement.style.fontSize = screen.width / 10 + "px";
+      }
+      setHtmlFontSize();
+
+      // 绑定事件
+      window.onresize = setHtmlFontSize;
+    </script>
+  </body>
+</html>

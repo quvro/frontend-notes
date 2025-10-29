@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="click_event()">点击事件按钮</button>
+    <input type="text" onfocus="onfocus_event()" />
+    <script>
+      function click_event() {
+        alert("clicked");
+      }
+      function onfocus_event() {
+        console.log("focused");
+      }
+    </script>
+  </body>
+</html>
