@@ -4,13 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./style.css" />
-    <script src="./script.js"></script>
     <title>Break-out Game</title>
   </head>
   <body>
     <h1>Breakout!</h1>
     <button id="show-button" class="button">Show Rules</button>
-    <div class="rules">
+    <div id="rules" class="rules">
       <h2>How To Play:</h2>
       <p>
         Use your right and left keys to move the paddle to bounce the ball up
@@ -20,5 +19,8 @@
       <button id="close-button" class="button">Close</button>
     </div>
     <canvas id="canvas" width="800" height="600"></canvas>
+
+    <!-- js要放在最后 -->
+    <script src="./script.js"></script>
   </body>
 </html>
