@@ -27,7 +27,7 @@ const brick = {
   w: 70,
   h: 20,
   offsetX: 45, // start position
-  offsetY: 20,
+  offsetY: 60,
   padding: 10,
   visible: true,
 };
@@ -48,8 +48,8 @@ const bricks = [];
 for (let i = 0; i < brickRow; i++) {
   bricks[i] = [];
   for (let j = 0; j < brickCol; j++) {
-    const x = i * (brick.w + brick.padding) + offsetX;
-    const y = j * (brick.h + brick.padding) + offsetY;
+    let x = i * (brick.w + brick.padding) + brick.offsetX;
+    let y = j * (brick.h + brick.padding) + brick.offsetY;
     bricks[i][j] = { x, y, ...brick };
   }
 }
@@ -77,7 +77,7 @@ function drawBricks() {
   for (let i = 0; i < brickRow; i++) {
     for (let j = 0; j < brickCol; j++) {
       ctx.beginPath();
-      ctx.rect(bricks[i][j].x, bricks[i][j].x, brick.w, brick.h);
+      ctx.rect(bricks[i][j].x, bricks[i][j].y, brick.w, brick.h);
       ctx.fillStyle = brick.visible ? "#0095dd" : transparent;
       ctx.fill();
       ctx.closePath();
@@ -104,21 +104,93 @@ function moveBall() {
   if (ball.x + ball.size > canvas.width || ball.x - ball.size < 0) {
     ball.dx *= -1; // move the opposite way
   }
-  if (ball.y + ball.size > canvas.height || ball.y - ball.size < 0) {
-    // TODO: collide bottom should end game
+  // hit bottom and lose game
+  if (ball.y + ball.size > canvas.height) {
+    lose();
+  }
+  if (ball.y - ball.size < 0) {
     ball.dy *= -1;
   }
 
   // paddle collision
   if (
-    ball.x - ball.size > paddle.x &&
-    ball.x + ball.size < paddle.x + paddle.w &&
-    ball.y - ball.size < paddle.y
+    ball.x > paddle.x &&
+    ball.x < paddle.x + paddle.w &&
+    ball.y > paddle.y &&
+    ball.y < paddle.y + paddle.h
   ) {
     ball.dy *= -1;
     // TODO: other ways to change speed?
   }
+
+  // brick collision
+  bricks.forEach((col) => {
+    col.forEach((brick) => {
+      if (brick.visible) {
+        if (ball.x > brick.x && ball.x < brick.x + brick.w) {
+          brick.dx *= -1;
+          brick.visible = false;
+          increaseScore();
+        }
+        if (ball.y > brick.y && ball.y < brick.y + brick.h) {
+          brick.dy *= -1;
+          brick.visible = false;
+          increaseScore();
+        }
+      }
+    });
+  });
 }
+
+// increase score
+function increaseScore() {
+  score++;
+
+  // if win
+  if (score === brickCol * brickRow) {
+    // hide objects
+    ball.visible = false;
+    paddle.visible = false;
+
+    // restart game
+    setTimeout(() => {
+      showAllBricks();
+      score = 0;
+      paddle.x = canvas.width / 2 - 40;
+      paddle.y = canvas.height - 20;
+      ball.x = canvas.width / 2;
+      ball.y = canvas.height / 2;
+      ball.visible = true;
+      paddle.visible = true;
+    }, 5000);
+  }
+}
+
+// make all bricks visible
+function showAllBricks() {
+  bricks.forEach((col) => {
+    col.forEach((brick) => (brick.visible = true));
+  });
+}
+
+// draw all things
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawBall();
+  drawPaddle();
+  // TODO: drawScore();
+  drawBricks();
+}
+
+// update every time
+function update() {
+  movePaddle();
+  moveBall();
+  draw();
+}
+
+update();
+console.log(111);
 
 // controll rules page
 showBtn.addEventListener("click", () => rules.classList.add("show"));
