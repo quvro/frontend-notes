@@ -26,7 +26,7 @@ const ball = {
 const brick = {
   w: 70,
   h: 20,
-  offsetX: 45, // start position
+  offsetX: 45,
   offsetY: 60,
   padding: 10,
   visible: true,
