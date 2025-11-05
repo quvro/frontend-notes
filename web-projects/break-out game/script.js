@@ -127,7 +127,11 @@ function moveBall() {
   ) {
     ball.dy *= -1;
     // change ball speed according to paddle speed
-    ball.dx += paddle.dx > 0 ? 1 : -1;
+    if (paddle.dx > 0) {
+      ball.dx += 1;
+    } else if (paddle.dx < 0) {
+      ball.dx += -1;
+    }
   }
 
   // brick collision
