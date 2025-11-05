@@ -39,7 +39,7 @@ const paddle = {
   w: 80,
   h: 10,
   speed: 8,
-  dx: 4,
+  dx: 0,
   visible: true,
 };
 
@@ -58,7 +58,7 @@ for (let i = 0; i < brickRow; i++) {
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2); // x y r start-angle end-angle
-  ctx.fillStyle = ball.visible ? "#0095dd" : transparent;
+  ctx.fillStyle = ball.visible ? "#0095dd" : "transparent";
   ctx.fill();
   ctx.closePath();
 }
@@ -67,7 +67,7 @@ function drawBall() {
 function drawPaddle() {
   ctx.beginPath();
   ctx.rect(paddle.x, paddle.y, paddle.w, paddle.h);
-  ctx.fillStyle = paddle.visible ? "#0095dd" : transparent;
+  ctx.fillStyle = paddle.visible ? "#0095dd" : "transparent";
   ctx.fill();
   ctx.closePath();
 }
@@ -78,11 +78,17 @@ function drawBricks() {
     for (let j = 0; j < brickCol; j++) {
       ctx.beginPath();
       ctx.rect(bricks[i][j].x, bricks[i][j].y, brick.w, brick.h);
-      ctx.fillStyle = brick.visible ? "#0095dd" : transparent;
+      ctx.fillStyle = bricks[i][j].visible ? "#0095dd" : "transparent";
       ctx.fill();
       ctx.closePath();
     }
   }
+}
+
+// draw score
+function drawScore() {
+  ctx.font = "20px Arial";
+  ctx.fillText(`Score: ${score}`, canvas.width - 100, 30);
 }
 
 // move paddle
@@ -106,7 +112,7 @@ function moveBall() {
   }
   // hit bottom and lose game
   if (ball.y + ball.size > canvas.height) {
-    lose();
+    reset();
   }
   if (ball.y - ball.size < 0) {
     ball.dy *= -1;
@@ -114,28 +120,38 @@ function moveBall() {
 
   // paddle collision
   if (
-    ball.x > paddle.x &&
-    ball.x < paddle.x + paddle.w &&
-    ball.y > paddle.y &&
-    ball.y < paddle.y + paddle.h
+    ball.x >= paddle.x &&
+    ball.x <= paddle.x + paddle.w &&
+    ball.y >= paddle.y &&
+    ball.y <= paddle.y + paddle.h
   ) {
     ball.dy *= -1;
-    // TODO: other ways to change speed?
+    // change ball speed according to paddle speed
+    ball.dx += paddle.dx > 0 ? 1 : -1;
   }
 
   // brick collision
   bricks.forEach((col) => {
     col.forEach((brick) => {
       if (brick.visible) {
-        if (ball.x > brick.x && ball.x < brick.x + brick.w) {
-          brick.dx *= -1;
+        // 找到砖块上离球最近的点
+        let closestX = Math.max(brick.x, Math.min(ball.x, brick.x + brick.w));
+        let closestY = Math.max(brick.y, Math.min(ball.y, brick.y + brick.h));
+
+        // 计算球心到最近点的距离
+        let distanceX = ball.x - closestX;
+        let distanceY = ball.y - closestY;
+        let distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        // collide
+        if (distance < ball.size) {
           brick.visible = false;
           increaseScore();
-        }
-        if (ball.y > brick.y && ball.y < brick.y + brick.h) {
-          brick.dy *= -1;
-          brick.visible = false;
-          increaseScore();
+          if (Math.abs(distanceX) > Math.abs(distanceY)) {
+            ball.dx *= -1;
+          } else {
+            ball.dy *= -1;
+          }
         }
       }
     });
@@ -154,15 +170,8 @@ function increaseScore() {
 
     // restart game
     setTimeout(() => {
-      showAllBricks();
-      score = 0;
-      paddle.x = canvas.width / 2 - 40;
-      paddle.y = canvas.height - 20;
-      ball.x = canvas.width / 2;
-      ball.y = canvas.height / 2;
-      ball.visible = true;
-      paddle.visible = true;
-    }, 5000);
+      reset();
+    }, 1000);
   }
 }
 
@@ -178,8 +187,23 @@ function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
   drawPaddle();
-  // TODO: drawScore();
+  drawScore();
   drawBricks();
+}
+
+// reset everything
+function reset() {
+  showAllBricks();
+  score = 0;
+  paddle.x = canvas.width / 2 - 40;
+  paddle.y = canvas.height - 20;
+  ball.x = canvas.width / 2;
+  ball.y = canvas.height / 2;
+  ball.visible = true;
+  paddle.visible = true;
+  ball.speed = 4;
+  ball.dx = 4;
+  ball.dy = -4;
 }
 
 // update every time
@@ -187,11 +211,36 @@ function update() {
   movePaddle();
   moveBall();
   draw();
+  requestAnimationFrame(update);
 }
 
 update();
-console.log(111);
+
+// keyboard input
+function keyDown(e) {
+  if (e.key === "Right" || e.key === "ArrowRight") {
+    paddle.dx = paddle.speed;
+  }
+  if (e.key === "Left" || e.key === "ArrowLeft") {
+    paddle.dx = -paddle.speed;
+  }
+}
+
+function keyUp(e) {
+  if (
+    e.key === "Right" ||
+    e.key === "ArrowRight" ||
+    e.key === "Left" ||
+    e.key === "ArrowLeft"
+  ) {
+    paddle.dx = 0;
+  }
+}
 
 // controll rules page
 showBtn.addEventListener("click", () => rules.classList.add("show"));
 closeBtn.addEventListener("click", () => rules.classList.remove("show"));
+
+// control paddle
+document.addEventListener("keydown", keyDown);
+document.addEventListener("keyup", keyUp);
