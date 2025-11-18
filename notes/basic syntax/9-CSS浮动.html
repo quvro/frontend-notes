@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      /* 若父元素坍塌，可使用overflow、伪元素选择器 */
+      .father {
+        background-color: aqua;
+        /* height: 150px; */
+        border: 5px solid;
+        /* overflow: hidden; */
+      }
+      .father::after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .left-son {
+        width: 100px;
+        height: 100px;
+        background-color: bisque;
+        float: left;
+      }
+      .right-son {
+        width: 100px;
+        height: 100px;
+        background-color: khaki;
+        float: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="father">
+      <div class="left-son">左浮动</div>
+      <div class="right-son">右浮动</div>
+    </div>
+    <p>一段文本一段文本一段文本一段文本一段文本</p>
+  </body>
+</html>

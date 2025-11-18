@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <button>button</button>
+  </head>
+  <body>
+    <div id="box1">ID选择器标签</div>
+    <div class="box2">类选择器标签</div>
+    <div>普通div标签</div>
+    <script>
+      let element_id = document.getElementById("box1");
+      console.log(element_id);
+
+      let element_class = document.getElementsByClassName("box2")[0];
+      console.log(element_class);
+
+      let element_tag = document.getElementsByTagName("div")[2];
+      console.log(element_tag);
+
+      element_id.innerHTML = "modified";
+      element_tag.style.fontSize = "20px";
+
+      // DOM属性绑定标签
+      let button_element = document.getElementsByTagName("button")[0];
+      //   button_element.onclick = function () {
+      //     alert("DOM click button");
+      //   };
+
+      button_element.addEventListener("click", function () {
+        alert("Event listener click button");
+      });
+    </script>
+  </body>
+</html>
